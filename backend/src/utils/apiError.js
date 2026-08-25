@@ -21,7 +21,7 @@ const ErrorCodes = {
   BATCH_NOT_FOUND: 404,
   MATCH_NOT_FOUND: 404,
   MATCH_ALREADY_RESOLVED: 409,
-  LLM_UNAVAILABLE: 502, // caught internally; agent layer falls back rather than surfacing this
+  LLM_UNAVAILABLE: 502, 
 };
 
 module.exports = { ApiError, ErrorCodes };

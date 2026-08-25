@@ -1,0 +1,713 @@
+{
+  "seed": 42,
+  "n_orders": 100,
+  "category_weights": {
+    "exact": 0.7,
+    "fee_mismatch": 0.15,
+    "split_settlement": 0.07,
+    "delayed_missing": 0.05,
+    "duplicate": 0.03
+  },
+  "orders": [
+    {
+      "order_id": "order_00000",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00001",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00002",
+      "category": "split_settlement",
+      "expected_status": "resolved",
+      "notes": "settled across 2 records: UTR929319141080, UTR566779112532",
+      "expected_match_type": "split"
+    },
+    {
+      "order_id": "order_00003",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00004",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00005",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00006",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00007",
+      "category": "fee_mismatch",
+      "expected_status": "resolved",
+      "notes": "fee/tax not netted in settlement report (expected diff ~329.37)",
+      "expected_match_type": "fuzzy"
+    },
+    {
+      "order_id": "order_00008",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00009",
+      "category": "fee_mismatch",
+      "expected_status": "resolved",
+      "notes": "fee/tax not netted in settlement report (expected diff ~309.73)",
+      "expected_match_type": "fuzzy"
+    },
+    {
+      "order_id": "order_00010",
+      "category": "fee_mismatch",
+      "expected_status": "resolved",
+      "notes": "fee/tax not netted in settlement report (expected diff ~352.29)",
+      "expected_match_type": "fuzzy"
+    },
+    {
+      "order_id": "order_00011",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00012",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00013",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00014",
+      "category": "fee_mismatch",
+      "expected_status": "resolved",
+      "notes": "fee/tax not netted in settlement report (expected diff ~40.69)",
+      "expected_match_type": "fuzzy"
+    },
+    {
+      "order_id": "order_00015",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00016",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00017",
+      "category": "delayed_missing",
+      "expected_status": "pending_review",
+      "notes": "bank credit not yet landed in this batch window + UTR missing",
+      "expected_match_type": "unmatched"
+    },
+    {
+      "order_id": "order_00018",
+      "category": "fee_mismatch",
+      "expected_status": "resolved",
+      "notes": "fee/tax not netted in settlement report (expected diff ~307.02)",
+      "expected_match_type": "fuzzy"
+    },
+    {
+      "order_id": "order_00019",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00020",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00021",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00022",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00023",
+      "category": "delayed_missing",
+      "expected_status": "pending_review",
+      "notes": "bank credit not yet landed in this batch window + UTR missing",
+      "expected_match_type": "unmatched"
+    },
+    {
+      "order_id": "order_00024",
+      "category": "fee_mismatch",
+      "expected_status": "resolved",
+      "notes": "fee/tax not netted in settlement report (expected diff ~240.08)",
+      "expected_match_type": "fuzzy"
+    },
+    {
+      "order_id": "order_00025",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00026",
+      "category": "fee_mismatch",
+      "expected_status": "resolved",
+      "notes": "fee/tax not netted in settlement report (expected diff ~30.919999999999998)",
+      "expected_match_type": "fuzzy"
+    },
+    {
+      "order_id": "order_00027",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00028",
+      "category": "split_settlement",
+      "expected_status": "resolved",
+      "notes": "settled across 2 records: UTR410407371993, UTR391426041482",
+      "expected_match_type": "split"
+    },
+    {
+      "order_id": "order_00029",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00030",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00031",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00032",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00033",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00034",
+      "category": "fee_mismatch",
+      "expected_status": "resolved",
+      "notes": "fee/tax not netted in settlement report (expected diff ~63.44)",
+      "expected_match_type": "fuzzy"
+    },
+    {
+      "order_id": "order_00035",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00036",
+      "category": "duplicate",
+      "expected_status": "resolved",
+      "notes": "duplicate bank entry injected - matcher must not double-count",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00037",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00038",
+      "category": "split_settlement",
+      "expected_status": "resolved",
+      "notes": "settled across 2 records: UTR294395439052, UTR900348631876",
+      "expected_match_type": "split"
+    },
+    {
+      "order_id": "order_00039",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00040",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00041",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00042",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00043",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00044",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00045",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00046",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00047",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00048",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00049",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00050",
+      "category": "duplicate",
+      "expected_status": "resolved",
+      "notes": "duplicate bank entry injected - matcher must not double-count",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00051",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00052",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00053",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00054",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00055",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00056",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00057",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00058",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00059",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00060",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00061",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00062",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00063",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00064",
+      "category": "fee_mismatch",
+      "expected_status": "resolved",
+      "notes": "fee/tax not netted in settlement report (expected diff ~246.64000000000001)",
+      "expected_match_type": "fuzzy"
+    },
+    {
+      "order_id": "order_00065",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00066",
+      "category": "fee_mismatch",
+      "expected_status": "resolved",
+      "notes": "fee/tax not netted in settlement report (expected diff ~231.70000000000002)",
+      "expected_match_type": "fuzzy"
+    },
+    {
+      "order_id": "order_00067",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00068",
+      "category": "split_settlement",
+      "expected_status": "resolved",
+      "notes": "settled across 2 records: UTR578737987515, UTR405314892324",
+      "expected_match_type": "split"
+    },
+    {
+      "order_id": "order_00069",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00070",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00071",
+      "category": "delayed_missing",
+      "expected_status": "pending_review",
+      "notes": "bank credit not yet landed in this batch window",
+      "expected_match_type": "unmatched"
+    },
+    {
+      "order_id": "order_00072",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00073",
+      "category": "delayed_missing",
+      "expected_status": "pending_review",
+      "notes": "bank credit not yet landed in this batch window",
+      "expected_match_type": "unmatched"
+    },
+    {
+      "order_id": "order_00074",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00075",
+      "category": "split_settlement",
+      "expected_status": "resolved",
+      "notes": "settled across 2 records: UTR941602610731, UTR895756506622",
+      "expected_match_type": "split"
+    },
+    {
+      "order_id": "order_00076",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00077",
+      "category": "fee_mismatch",
+      "expected_status": "resolved",
+      "notes": "fee/tax not netted in settlement report (expected diff ~252.69)",
+      "expected_match_type": "fuzzy"
+    },
+    {
+      "order_id": "order_00078",
+      "category": "fee_mismatch",
+      "expected_status": "resolved",
+      "notes": "fee/tax not netted in settlement report (expected diff ~308.35)",
+      "expected_match_type": "fuzzy"
+    },
+    {
+      "order_id": "order_00079",
+      "category": "fee_mismatch",
+      "expected_status": "resolved",
+      "notes": "fee/tax not netted in settlement report (expected diff ~342.01)",
+      "expected_match_type": "fuzzy"
+    },
+    {
+      "order_id": "order_00080",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00081",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00082",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00083",
+      "category": "split_settlement",
+      "expected_status": "resolved",
+      "notes": "settled across 2 records: UTR334614800586, UTR272121093022",
+      "expected_match_type": "split"
+    },
+    {
+      "order_id": "order_00084",
+      "category": "duplicate",
+      "expected_status": "resolved",
+      "notes": "duplicate bank entry injected - matcher must not double-count",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00085",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00086",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00087",
+      "category": "fee_mismatch",
+      "expected_status": "resolved",
+      "notes": "fee/tax not netted in settlement report (expected diff ~113.78)",
+      "expected_match_type": "fuzzy"
+    },
+    {
+      "order_id": "order_00088",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00089",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00090",
+      "category": "split_settlement",
+      "expected_status": "resolved",
+      "notes": "settled across 2 records: UTR145424634923, UTR298763169017",
+      "expected_match_type": "split"
+    },
+    {
+      "order_id": "order_00091",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00092",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00093",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00094",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00095",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00096",
+      "category": "delayed_missing",
+      "expected_status": "pending_review",
+      "notes": "bank credit not yet landed in this batch window",
+      "expected_match_type": "unmatched"
+    },
+    {
+      "order_id": "order_00097",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00098",
+      "category": "exact",
+      "expected_status": "resolved",
+      "notes": "",
+      "expected_match_type": "exact"
+    },
+    {
+      "order_id": "order_00099",
+      "category": "fee_mismatch",
+      "expected_status": "resolved",
+      "notes": "fee/tax not netted in settlement report (expected diff ~265.96)",
+      "expected_match_type": "fuzzy"
+    }
+  ]
+}
