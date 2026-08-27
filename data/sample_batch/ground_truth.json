@@ -27,7 +27,7 @@
       "order_id": "order_00002",
       "category": "split_settlement",
       "expected_status": "resolved",
-      "notes": "settled across 2 records: UTR929319141080, UTR566779112532",
+      "notes": "settled across 2 records: 514190713649kq71, 1965067727x272hp",
       "expected_match_type": "split"
     },
     {
@@ -62,7 +62,7 @@
       "order_id": "order_00007",
       "category": "fee_mismatch",
       "expected_status": "resolved",
-      "notes": "fee/tax not netted in settlement report (expected diff ~329.37)",
+      "notes": "fee/tax not netted in settlement report (expected diff ~216.88)",
       "expected_match_type": "fuzzy"
     },
     {
@@ -76,14 +76,14 @@
       "order_id": "order_00009",
       "category": "fee_mismatch",
       "expected_status": "resolved",
-      "notes": "fee/tax not netted in settlement report (expected diff ~309.73)",
+      "notes": "fee/tax not netted in settlement report (expected diff ~290.35)",
       "expected_match_type": "fuzzy"
     },
     {
       "order_id": "order_00010",
       "category": "fee_mismatch",
       "expected_status": "resolved",
-      "notes": "fee/tax not netted in settlement report (expected diff ~352.29)",
+      "notes": "fee/tax not netted in settlement report (expected diff ~47.18)",
       "expected_match_type": "fuzzy"
     },
     {
@@ -111,7 +111,7 @@
       "order_id": "order_00014",
       "category": "fee_mismatch",
       "expected_status": "resolved",
-      "notes": "fee/tax not netted in settlement report (expected diff ~40.69)",
+      "notes": "fee/tax not netted in settlement report (expected diff ~28.66)",
       "expected_match_type": "fuzzy"
     },
     {
@@ -139,7 +139,7 @@
       "order_id": "order_00018",
       "category": "fee_mismatch",
       "expected_status": "resolved",
-      "notes": "fee/tax not netted in settlement report (expected diff ~307.02)",
+      "notes": "fee/tax not netted in settlement report (expected diff ~92.22999999999999)",
       "expected_match_type": "fuzzy"
     },
     {
@@ -181,7 +181,7 @@
       "order_id": "order_00024",
       "category": "fee_mismatch",
       "expected_status": "resolved",
-      "notes": "fee/tax not netted in settlement report (expected diff ~240.08)",
+      "notes": "fee/tax not netted in settlement report (expected diff ~122.68)",
       "expected_match_type": "fuzzy"
     },
     {
@@ -195,7 +195,7 @@
       "order_id": "order_00026",
       "category": "fee_mismatch",
       "expected_status": "resolved",
-      "notes": "fee/tax not netted in settlement report (expected diff ~30.919999999999998)",
+      "notes": "fee/tax not netted in settlement report (expected diff ~73.18)",
       "expected_match_type": "fuzzy"
     },
     {
@@ -209,7 +209,7 @@
       "order_id": "order_00028",
       "category": "split_settlement",
       "expected_status": "resolved",
-      "notes": "settled across 2 records: UTR410407371993, UTR391426041482",
+      "notes": "settled across 2 records: 48801768251gg2kt, 17300742151jp70l",
       "expected_match_type": "split"
     },
     {
@@ -251,7 +251,7 @@
       "order_id": "order_00034",
       "category": "fee_mismatch",
       "expected_status": "resolved",
-      "notes": "fee/tax not netted in settlement report (expected diff ~63.44)",
+      "notes": "fee/tax not netted in settlement report (expected diff ~52.78)",
       "expected_match_type": "fuzzy"
     },
     {
@@ -279,7 +279,7 @@
       "order_id": "order_00038",
       "category": "split_settlement",
       "expected_status": "resolved",
-      "notes": "settled across 2 records: UTR294395439052, UTR900348631876",
+      "notes": "settled across 2 records: 28464650000rn6hw, 6392415228cozdan",
       "expected_match_type": "split"
     },
     {
@@ -461,7 +461,7 @@
       "order_id": "order_00064",
       "category": "fee_mismatch",
       "expected_status": "resolved",
-      "notes": "fee/tax not netted in settlement report (expected diff ~246.64000000000001)",
+      "notes": "fee/tax not netted in settlement report (expected diff ~67.94)",
       "expected_match_type": "fuzzy"
     },
     {
@@ -475,7 +475,7 @@
       "order_id": "order_00066",
       "category": "fee_mismatch",
       "expected_status": "resolved",
-      "notes": "fee/tax not netted in settlement report (expected diff ~231.70000000000002)",
+      "notes": "fee/tax not netted in settlement report (expected diff ~59.05)",
       "expected_match_type": "fuzzy"
     },
     {
@@ -489,7 +489,7 @@
       "order_id": "order_00068",
       "category": "split_settlement",
       "expected_status": "resolved",
-      "notes": "settled across 2 records: UTR578737987515, UTR405314892324",
+      "notes": "settled across 2 records: 2885330933c2dpcz, 4763500857souupt",
       "expected_match_type": "split"
     },
     {
@@ -510,7 +510,7 @@
       "order_id": "order_00071",
       "category": "delayed_missing",
       "expected_status": "pending_review",
-      "notes": "bank credit not yet landed in this batch window",
+      "notes": "bank credit not yet landed in this batch window + UTR missing",
       "expected_match_type": "unmatched"
     },
     {
@@ -524,7 +524,7 @@
       "order_id": "order_00073",
       "category": "delayed_missing",
       "expected_status": "pending_review",
-      "notes": "bank credit not yet landed in this batch window",
+      "notes": "bank credit not yet landed in this batch window + UTR missing",
       "expected_match_type": "unmatched"
     },
     {
@@ -538,7 +538,7 @@
       "order_id": "order_00075",
       "category": "split_settlement",
       "expected_status": "resolved",
-      "notes": "settled across 2 records: UTR941602610731, UTR895756506622",
+      "notes": "settled across 2 records: 5621463184f6wdg1, 9337145038ubr25o",
       "expected_match_type": "split"
     },
     {
@@ -552,21 +552,21 @@
       "order_id": "order_00077",
       "category": "fee_mismatch",
       "expected_status": "resolved",
-      "notes": "fee/tax not netted in settlement report (expected diff ~252.69)",
+      "notes": "fee/tax not netted in settlement report (expected diff ~29.0)",
       "expected_match_type": "fuzzy"
     },
     {
       "order_id": "order_00078",
       "category": "fee_mismatch",
       "expected_status": "resolved",
-      "notes": "fee/tax not netted in settlement report (expected diff ~308.35)",
+      "notes": "fee/tax not netted in settlement report (expected diff ~108.17)",
       "expected_match_type": "fuzzy"
     },
     {
       "order_id": "order_00079",
       "category": "fee_mismatch",
       "expected_status": "resolved",
-      "notes": "fee/tax not netted in settlement report (expected diff ~342.01)",
+      "notes": "fee/tax not netted in settlement report (expected diff ~32.72)",
       "expected_match_type": "fuzzy"
     },
     {
@@ -594,7 +594,7 @@
       "order_id": "order_00083",
       "category": "split_settlement",
       "expected_status": "resolved",
-      "notes": "settled across 2 records: UTR334614800586, UTR272121093022",
+      "notes": "settled across 2 records: 7406913885imy965, 7603978731boscro",
       "expected_match_type": "split"
     },
     {
@@ -622,7 +622,7 @@
       "order_id": "order_00087",
       "category": "fee_mismatch",
       "expected_status": "resolved",
-      "notes": "fee/tax not netted in settlement report (expected diff ~113.78)",
+      "notes": "fee/tax not netted in settlement report (expected diff ~160.15)",
       "expected_match_type": "fuzzy"
     },
     {
@@ -643,7 +643,7 @@
       "order_id": "order_00090",
       "category": "split_settlement",
       "expected_status": "resolved",
-      "notes": "settled across 2 records: UTR145424634923, UTR298763169017",
+      "notes": "settled across 2 records: 2727768349dz6s60, 7598745558ftf6nj",
       "expected_match_type": "split"
     },
     {
@@ -685,7 +685,7 @@
       "order_id": "order_00096",
       "category": "delayed_missing",
       "expected_status": "pending_review",
-      "notes": "bank credit not yet landed in this batch window",
+      "notes": "bank credit not yet landed in this batch window + UTR missing",
       "expected_match_type": "unmatched"
     },
     {
@@ -706,7 +706,7 @@
       "order_id": "order_00099",
       "category": "fee_mismatch",
       "expected_status": "resolved",
-      "notes": "fee/tax not netted in settlement report (expected diff ~265.96)",
+      "notes": "fee/tax not netted in settlement report (expected diff ~214.21)",
       "expected_match_type": "fuzzy"
     }
   ]

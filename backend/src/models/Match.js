@@ -13,9 +13,12 @@ const matchSchema = new mongoose.Schema({
       required: true,
     },
   ], // 2+ entries for split-settlement matches
+  // "none" = no matcher (exact/fuzzy/split) could resolve this order - it
+  // still gets a Match record with a recommendedAction, per the Day 5 rule
+  // that every order reaches an explicit decision, matched or not.
   matchType: {
     type: String,
-    enum: ["exact", "fuzzy", "split", "reference"],
+    enum: ["exact", "fuzzy", "split", "reference", "none"],
     required: true,
   },
   confidence: {

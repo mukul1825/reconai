@@ -13,10 +13,14 @@ const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
 // POST /api/v1/batches
-// Uploads bank/settlement/ledger CSVs, creates a batch, triggers the matching pipeline.
-// CSV parsing into Transaction docs is Day 3-4 work (needs generate_data.py's schema
-// finalized first) - this stub creates the batch and calls the pipeline placeholder
-// so the route contract is real end-to-end from Day 2.
+// Uploads bank/settlement/ledger CSVs, creates a batch, runs the full
+// matching pipeline (exact -> fuzzy -> split -> decision policy), and
+// persists Transaction + Match + AuditLog records. This is synchronous for
+// now (fine at hackathon-demo batch sizes of a few hundred rows); if batch
+// sizes grow, this is the point where you'd move to a background job queue
+// rather than blocking the HTTP response - noted here rather than built,
+// since it's not needed at this scale and would be scope creep per the
+// Day 1 feature freeze.
 router.post(
   "/",
   requireAuth,
@@ -37,12 +41,22 @@ router.post(
 
     const batch = await Batch.create({ userId: req.userId, status: "processing" });
 
-    // TODO (Day 3-4): parse each CSV buffer into Transaction docs with `source` set
-    // accordingly, validating required fields per the Day 1 schema before insert.
+    try {
+      const { matchRate, summary } = await runMatchingPipeline(batch._id, {
+        ledgerCsv: ledger[0].buffer.toString("utf-8"),
+        settlementCsv: settlement[0].buffer.toString("utf-8"),
+        bankCsv: bank[0].buffer.toString("utf-8"),
+      });
 
-    await runMatchingPipeline(batch._id);
-
-    res.status(201).json({ batchId: batch._id, status: "processing" });
+      res.status(201).json({ batchId: batch._id, status: "complete", matchRate, summary });
+    } catch (err) {
+      await Batch.findByIdAndUpdate(batch._id, { status: "failed" });
+      throw new ApiError(
+        "INVALID_CSV_FORMAT",
+        `Could not process the uploaded files: ${err.message}`,
+        400
+      );
+    }
   })
 );
 

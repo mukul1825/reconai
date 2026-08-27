@@ -2,18 +2,28 @@
  * Parses the three raw CSV sources into a common internal shape.
  *
  * WHY THIS FILE EXISTS SEPARATELY FROM THE MATCHING ENGINE:
- * The matching engine (exactMatch.js) should never know or care that its
- * input came from a CSV - tomorrow it could be a live Razorpay API pull or
- * a different bank's export format. This file is the only place that knows
- * about column names. If a bank format changes, this is the only file that
- * changes.
+ * The matching engine (exactMatch.js etc.) should never know or care that
+ * its input came from a CSV - tomorrow it could be a live Razorpay API pull
+ * or a different bank's export format. This file is the only place that
+ * knows about column names. If a bank format changes, this is the only file
+ * that changes.
+ *
+ * SETTLEMENT SCHEMA (Day 6): column names below follow Razorpay's real
+ * Settlement Recon API terminology (entity_id, settlement_id,
+ * settlement_utr, amount, fee, tax, credit) rather than invented names -
+ * see docs/razorpay-schema-notes.md for the source and for the one
+ * disclosed simplification this project makes (one settlement leg per
+ * order, rather than fully modeling Razorpay's real batch-settlement
+ * structure where many orders can share a single settlement_id/UTR).
  *
  * Each source is genuinely shaped differently in the real world:
  *   - ledger:     order_id, order_amount, order_date, customer_email
- *   - settlement: payment_id, order_id, utr, settled_amount, fee, tax, settlement_date
- *   - bank:       date, amount, utr, description   (NO order_id, NO payment_id -
- *                 banks don't know about your orders, which is exactly why
- *                 reconciliation is a real problem and not a trivial join)
+ *   - settlement: entity_id, order_id, settlement_id, settlement_utr,
+ *                 amount (gross), fee, tax, credit (net), settled_at
+ *   - bank:       date, amount, utr, description   (NO order_id, NO
+ *                 entity_id - banks don't know about your orders, which is
+ *                 exactly why reconciliation is a real problem and not a
+ *                 trivial join)
  */
 
 const { parse } = require("csv-parse/sync");
@@ -37,10 +47,11 @@ function parseSettlementCsv(csvString) {
   return rows.map((r) => ({
     source: "settlement",
     orderId: r.order_id,
-    amount: parseFloat(r.settled_amount),
-    date: r.settlement_date,
-    utr: r.utr && r.utr.trim() !== "" ? r.utr : null,
-    paymentId: r.payment_id,
+    amount: parseFloat(r.credit), // net settled amount - what actually reconciles against the bank credit
+    date: r.settled_at,
+    utr: r.settlement_utr && r.settlement_utr.trim() !== "" ? r.settlement_utr : null,
+    paymentId: r.entity_id,
+    settlementId: r.settlement_id,
     fee: parseFloat(r.fee) || 0,
     tax: parseFloat(r.tax) || 0,
   }));

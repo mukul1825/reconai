@@ -17,6 +17,14 @@ Reproducibility: same --seed always produces the same dataset. This matters
 for the buildathon demo - your reported match rate must be reproducible by
 a judge running this exact script, not a one-time lucky run.
 
+SCHEMA NOTE (Day 6): settlement_report.csv column names follow Razorpay's
+real Settlement Recon API terminology (entity_id, settlement_id,
+settlement_utr, amount, fee, tax, credit) rather than invented names - see
+docs/razorpay-schema-notes.md for the source and for the one deliberate
+simplification this dataset makes (one settlement leg per order, rather than
+fully modeling Razorpay's real batch-settlement structure where many orders
+can share a single settlement_id/UTR).
+
 Usage:
     python generate_data.py --n 100 --seed 42 --out sample_batch
 """
@@ -48,6 +56,10 @@ CATEGORY_WEIGHTS = {
 FIRST_NAMES = ["Aarav", "Priya", "Rohan", "Ananya", "Vikram", "Sneha", "Karan", "Isha", "Aditya", "Neha"]
 LAST_NAMES = ["Sharma", "Patel", "Reddy", "Iyer", "Singh", "Gupta", "Nair", "Rao", "Mehta", "Kapoor"]
 
+# Bank name pool for realistic NEFT narration text - format follows the
+# documented real-world pattern "NEFT CR: [bank] [UTR] RAZORPAY SETTLEMENT".
+BANKS = ["HDFC", "ICICI", "AXIS", "SBI", "KOTAK"]
+
 
 def compute_fee_and_tax(gross_amount):
     fee = round(gross_amount * FEE_RATE, 2)
@@ -63,17 +75,34 @@ def gen_order_id(i):
     return f"order_{i:05d}"
 
 
-def gen_payment_id(i):
-    return f"pay_{random.randint(10**13, 10**14 - 1)}"
+def gen_entity_id(i):
+    # Real Razorpay payment IDs look like pay_DEXrnipqTmWVGE - alnum, pay_ prefix
+    chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+    suffix = "".join(random.choice(chars) for _ in range(14))
+    return f"pay_{suffix}"
+
+
+def gen_settlement_id(i):
+    chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+    suffix = "".join(random.choice(chars) for _ in range(14))
+    return f"setl_{suffix}"
 
 
 def gen_utr(i):
-    return f"UTR{random.randint(10**11, 10**12 - 1)}"
+    # Real settlement UTRs look like 1568176960vxp0rj - epoch-ish digits + alnum tail
+    chars = "abcdefghijklmnopqrstuvwxyz0123456789"
+    tail = "".join(random.choice(chars) for _ in range(6))
+    return f"{random.randint(10**9, 10**10 - 1)}{tail}"
 
 
 def gen_customer_email():
     name = f"{random.choice(FIRST_NAMES).lower()}.{random.choice(LAST_NAMES).lower()}"
     return f"{name}{random.randint(1,999)}@example.com"
+
+
+def gen_bank_narration(utr):
+    bank = random.choice(BANKS)
+    return f"NEFT CR: {bank} {utr} RAZORPAY SETTLEMENT"
 
 
 def assign_categories(n):
@@ -84,7 +113,6 @@ def assign_categories(n):
     for cat, weight in CATEGORY_WEIGHTS.items():
         count = round(n * weight)
         categories.extend([cat] * count)
-    # Pad/trim to exactly n in case rounding didn't land exactly
     while len(categories) < n:
         categories.append("exact")
     categories = categories[:n]
@@ -110,10 +138,11 @@ def generate(n, seed, out_dir):
         gross_amount = round(random.uniform(299, 14999), 2)
         order_date = random_date(base_date, max_offset_days=25)
         fee, tax = compute_fee_and_tax(gross_amount)
-        settled_amount = round(gross_amount - fee - tax, 2)
-        payment_id = gen_payment_id(i)
+        credit = round(gross_amount - fee - tax, 2)
+        entity_id = gen_entity_id(i)
+        settlement_id = gen_settlement_id(i)
         utr = gen_utr(i)
-        settlement_date = order_date + timedelta(days=random.randint(1, 3))
+        settled_at = order_date + timedelta(days=random.randint(1, 3))
 
         ledger_rows.append({
             "order_id": order_id,
@@ -131,13 +160,14 @@ def generate(n, seed, out_dir):
 
         if category == "exact":
             settlement_rows.append({
-                "payment_id": payment_id, "order_id": order_id, "utr": utr,
-                "settled_amount": settled_amount, "fee": fee, "tax": tax,
-                "settlement_date": settlement_date.strftime("%Y-%m-%d"),
+                "entity_id": entity_id, "order_id": order_id,
+                "settlement_id": settlement_id, "settlement_utr": utr,
+                "amount": gross_amount, "fee": fee, "tax": tax, "credit": credit,
+                "settled_at": settled_at.strftime("%Y-%m-%d"),
             })
             bank_rows.append({
-                "date": settlement_date.strftime("%Y-%m-%d"), "amount": settled_amount,
-                "utr": utr, "description": f"NEFT CR {utr}",
+                "date": settled_at.strftime("%Y-%m-%d"), "amount": credit,
+                "utr": utr, "description": gen_bank_narration(utr),
             })
             gt_entry["expected_match_type"] = "exact"
 
@@ -147,39 +177,46 @@ def generate(n, seed, out_dir):
             # matching (ledger vs settlement) fails even though the money is
             # correct; the matcher has to recognize the ~fee-sized gap.
             settlement_rows.append({
-                "payment_id": payment_id, "order_id": order_id, "utr": utr,
-                "settled_amount": settled_amount, "fee": 0, "tax": 0,
-                "settlement_date": settlement_date.strftime("%Y-%m-%d"),
+                "entity_id": entity_id, "order_id": order_id,
+                "settlement_id": settlement_id, "settlement_utr": utr,
+                "amount": gross_amount, "fee": 0, "tax": 0, "credit": credit,
+                "settled_at": settled_at.strftime("%Y-%m-%d"),
             })
             bank_rows.append({
-                "date": settlement_date.strftime("%Y-%m-%d"), "amount": settled_amount,
-                "utr": utr, "description": f"NEFT CR {utr}",
+                "date": settled_at.strftime("%Y-%m-%d"), "amount": credit,
+                "utr": utr, "description": gen_bank_narration(utr),
             })
             gt_entry["expected_match_type"] = "fuzzy"
             gt_entry["notes"] = f"fee/tax not netted in settlement report (expected diff ~{fee + tax})"
 
         elif category == "split_settlement":
-            # Order paid via two settlement batches (e.g. staged payout).
-            # Split roughly in half with a small random skew.
+            # Order paid via two separate settlement legs (e.g. two payment
+            # attempts completing one order). Disclosed simplification: real
+            # Razorpay batches typically share ONE settlement_id/UTR across
+            # many orders rather than splitting one order across two UTRs -
+            # see docs/razorpay-schema-notes.md.
             split_ratio = random.uniform(0.35, 0.65)
-            part1 = round(settled_amount * split_ratio, 2)
-            part2 = round(settled_amount - part1, 2)
+            part1 = round(credit * split_ratio, 2)
+            part2 = round(credit - part1, 2)
             utr2 = gen_utr(i + 100000)
-            payment_id2 = gen_payment_id(i + 100000)
-            settlement_date2 = settlement_date + timedelta(days=1)
+            entity_id2 = gen_entity_id(i + 100000)
+            settlement_id2 = gen_settlement_id(i + 100000)
+            settled_at2 = settled_at + timedelta(days=1)
 
-            for part_amount, u, pid, sdate in [
-                (part1, utr, payment_id, settlement_date),
-                (part2, utr2, payment_id2, settlement_date2),
+            for part_amount, u, eid, sid, sdate in [
+                (part1, utr, entity_id, settlement_id, settled_at),
+                (part2, utr2, entity_id2, settlement_id2, settled_at2),
             ]:
                 settlement_rows.append({
-                    "payment_id": pid, "order_id": order_id, "utr": u,
-                    "settled_amount": part_amount, "fee": round(fee / 2, 2), "tax": round(tax / 2, 2),
-                    "settlement_date": sdate.strftime("%Y-%m-%d"),
+                    "entity_id": eid, "order_id": order_id,
+                    "settlement_id": sid, "settlement_utr": u,
+                    "amount": round(gross_amount * split_ratio, 2), "fee": round(fee / 2, 2),
+                    "tax": round(tax / 2, 2), "credit": part_amount,
+                    "settled_at": sdate.strftime("%Y-%m-%d"),
                 })
                 bank_rows.append({
                     "date": sdate.strftime("%Y-%m-%d"), "amount": part_amount,
-                    "utr": u, "description": f"NEFT CR {u}",
+                    "utr": u, "description": gen_bank_narration(u),
                 })
             gt_entry["expected_match_type"] = "split"
             gt_entry["notes"] = f"settled across 2 records: {utr}, {utr2}"
@@ -191,10 +228,11 @@ def generate(n, seed, out_dir):
             # sometimes to simulate a reporting gap on top of the delay.
             drop_utr = random.random() < 0.5
             settlement_rows.append({
-                "payment_id": payment_id, "order_id": order_id,
-                "utr": "" if drop_utr else utr,
-                "settled_amount": settled_amount, "fee": fee, "tax": tax,
-                "settlement_date": settlement_date.strftime("%Y-%m-%d"),
+                "entity_id": entity_id, "order_id": order_id,
+                "settlement_id": settlement_id,
+                "settlement_utr": "" if drop_utr else utr,
+                "amount": gross_amount, "fee": fee, "tax": tax, "credit": credit,
+                "settled_at": settled_at.strftime("%Y-%m-%d"),
             })
             # Deliberately no corresponding bank_rows entry this cycle.
             gt_entry["expected_status"] = "pending_review"
@@ -203,13 +241,14 @@ def generate(n, seed, out_dir):
 
         elif category == "duplicate":
             settlement_rows.append({
-                "payment_id": payment_id, "order_id": order_id, "utr": utr,
-                "settled_amount": settled_amount, "fee": fee, "tax": tax,
-                "settlement_date": settlement_date.strftime("%Y-%m-%d"),
+                "entity_id": entity_id, "order_id": order_id,
+                "settlement_id": settlement_id, "settlement_utr": utr,
+                "amount": gross_amount, "fee": fee, "tax": tax, "credit": credit,
+                "settled_at": settled_at.strftime("%Y-%m-%d"),
             })
             bank_row = {
-                "date": settlement_date.strftime("%Y-%m-%d"), "amount": settled_amount,
-                "utr": utr, "description": f"NEFT CR {utr}",
+                "date": settled_at.strftime("%Y-%m-%d"), "amount": credit,
+                "utr": utr, "description": gen_bank_narration(utr),
             }
             bank_rows.append(bank_row)
             bank_rows.append(dict(bank_row))  # exact duplicate entry
@@ -225,7 +264,7 @@ def generate(n, seed, out_dir):
 
     _write_csv(out_dir / "ledger.csv", ledger_rows, ["order_id", "order_amount", "order_date", "customer_email"])
     _write_csv(out_dir / "settlement_report.csv", settlement_rows,
-               ["payment_id", "order_id", "utr", "settled_amount", "fee", "tax", "settlement_date"])
+               ["entity_id", "order_id", "settlement_id", "settlement_utr", "amount", "fee", "tax", "credit", "settled_at"])
     _write_csv(out_dir / "bank_statement.csv", bank_rows, ["date", "amount", "utr", "description"])
 
     with open(out_dir / "ground_truth.json", "w") as f:
