@@ -1,4 +1,5 @@
 require("dotenv").config();
+console.log("[startup] GROQ_API_KEY loaded:", process.env.GROQ_API_KEY ? `yes (${process.env.GROQ_API_KEY.slice(0,4)}...)` : "NO — undefined");
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db");

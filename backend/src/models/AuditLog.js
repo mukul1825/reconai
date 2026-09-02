@@ -16,7 +16,10 @@ const auditLogSchema = new mongoose.Schema({
     required: true,
   },
   event: {
-    type: String, // e.g. "batch_uploaded", "auto_resolved", "human_approved", "human_rejected"
+    type: String, // e.g. "batch_uploaded", "auto_resolve", "escalate_high_value",
+                  // "request_more_data", "flag_for_review" (these 4 are the exact
+                  // recommendedAction values from decisionPolicy.js), "human_approved",
+                  // "human_rejected", "batch_processed"
     required: true,
   },
   confidence: { type: Number, default: null }, // snapshot at time of decision

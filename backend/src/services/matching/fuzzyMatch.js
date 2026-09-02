@@ -80,6 +80,8 @@ function runFuzzyMatch(exactUnmatched, bank) {
       settlement: s,
       bank: bankRecord,
       confidence,
+      gap, // real computed gap amount - was only baked into `note` text before, never
+           // available as data for anything downstream (e.g. the LLM explainer) to use
       note: `Settlement was ₹${gap} lower than order amount (~₹${estimatedTotal} expected fee+tax), but the settlement report's fee/tax fields were not populated.`,
     });
   }

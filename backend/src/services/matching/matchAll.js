@@ -75,6 +75,7 @@ function runFullMatchingPipeline({ ledger, settlement, bank }) {
       requiresHumanApproval: decision.requiresHumanApproval,
       missingFields: decision.missingFields,
       note: m.note || decision.reason,
+      gapAmount: m.gap ?? null, // real value for fuzzy matches, null for exact/split (no single "gap" concept applies)
     });
   }
 
@@ -91,6 +92,7 @@ function runFullMatchingPipeline({ ledger, settlement, bank }) {
       requiresHumanApproval: decision.requiresHumanApproval,
       missingFields: decision.missingFields,
       note: `${u.reason}: ${decision.reason}`,
+      gapAmount: u.gap ?? null, // gap_not_fee_shaped entries carry this from fuzzyMatch.js; other reasons don't have a gap concept
     });
   }
 

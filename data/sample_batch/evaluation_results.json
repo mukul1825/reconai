@@ -1,0 +1,70 @@
+{
+  "datasetInfo": {
+    "dir": "C:\\Users\\Lenovo\\reconai\\data\\sample_batch",
+    "seed": 42,
+    "nOrders": 100
+  },
+  "pipelineMatchRate": 80,
+  "overallAccuracy": 100,
+  "perCategory": {
+    "exact": {
+      "total": 70,
+      "correct": 70,
+      "accuracy": 100
+    },
+    "split_settlement": {
+      "total": 7,
+      "correct": 7,
+      "accuracy": 100
+    },
+    "fee_mismatch": {
+      "total": 15,
+      "correct": 15,
+      "accuracy": 100
+    },
+    "delayed_missing": {
+      "total": 5,
+      "correct": 5,
+      "accuracy": 100
+    },
+    "duplicate": {
+      "total": 3,
+      "correct": 3,
+      "accuracy": 100
+    }
+  },
+  "confusionMatrix": {
+    "exact": {
+      "exact": 73,
+      "fuzzy": 0,
+      "split": 0,
+      "none": 0
+    },
+    "fuzzy": {
+      "exact": 0,
+      "fuzzy": 15,
+      "split": 0,
+      "none": 0
+    },
+    "split": {
+      "exact": 0,
+      "fuzzy": 0,
+      "split": 7,
+      "none": 0
+    },
+    "none": {
+      "exact": 0,
+      "fuzzy": 0,
+      "split": 0,
+      "none": 5
+    }
+  },
+  "autoResolvePrecision": 100,
+  "autoResolveTotal": 80,
+  "reconciliationRecall": 100,
+  "reconcilableTotal": 95,
+  "safetyCheck": {
+    "delayedMissingAutoResolved": 0,
+    "passed": true
+  }
+}

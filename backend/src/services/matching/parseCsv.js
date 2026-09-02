@@ -28,8 +28,30 @@
 
 const { parse } = require("csv-parse/sync");
 
+/**
+ * Validates the parsed CSV has the columns a given source actually needs,
+ * BEFORE any row reaches the database. Without this, a wrong-file-in-
+ * wrong-slot mistake (e.g. uploading bank_statement.csv as the ledger)
+ * surfaces as a raw Mongoose CastError - a real internals leak, not an
+ * error state that tells the person what to do. This function is what
+ * turns that into "this file doesn't look like a ledger export."
+ */
+function validateColumns(rows, requiredColumns, sourceLabel) {
+  if (rows.length === 0) {
+    throw new Error(`The ${sourceLabel} file is empty.`);
+  }
+  const actualColumns = Object.keys(rows[0]);
+  const missing = requiredColumns.filter((c) => !actualColumns.includes(c));
+  if (missing.length > 0) {
+    throw new Error(
+      `This doesn't look like a ${sourceLabel} file - missing column${missing.length > 1 ? "s" : ""}: ${missing.join(", ")}. Check you selected the right file for this slot.`
+    );
+  }
+}
+
 function parseLedgerCsv(csvString) {
   const rows = parse(csvString, { columns: true, skip_empty_lines: true });
+  validateColumns(rows, ["order_id", "order_amount", "order_date"], "ledger");
   return rows.map((r) => ({
     source: "ledger",
     orderId: r.order_id,
@@ -44,6 +66,7 @@ function parseLedgerCsv(csvString) {
 
 function parseSettlementCsv(csvString) {
   const rows = parse(csvString, { columns: true, skip_empty_lines: true });
+  validateColumns(rows, ["entity_id", "order_id", "settlement_utr", "credit", "settled_at"], "settlement report");
   return rows.map((r) => ({
     source: "settlement",
     orderId: r.order_id,
@@ -59,6 +82,7 @@ function parseSettlementCsv(csvString) {
 
 function parseBankCsv(csvString) {
   const rows = parse(csvString, { columns: true, skip_empty_lines: true });
+  validateColumns(rows, ["date", "amount", "utr"], "bank statement");
   return rows.map((r) => ({
     source: "bank",
     orderId: null, // banks never carry our order IDs - this is expected, not missing data

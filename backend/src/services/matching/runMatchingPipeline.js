@@ -58,7 +58,7 @@ async function runMatchingPipeline(batchId, rawCsv) {
     if (status === "pending_review") {
       const explainerResult = await explainException({
         transactions: [ledgerTx],
-        nearestCandidateDiff: { possibleCause: inferCause(result) },
+        nearestCandidateDiff: { possibleCause: inferCause(result), gap: result.gapAmount ?? undefined },
         confidence: result.confidence,
         amount: ledgerTx.amount,
         availableFields: result.missingFields.length > 0
@@ -86,9 +86,16 @@ async function runMatchingPipeline(batchId, rawCsv) {
       batchId,
       matchId: match._id,
       actor: "system",
-      event: status === "auto_resolved" ? "auto_resolved" : "flagged_for_review",
+      // The event IS the recommendedAction, verbatim - "flag_for_review",
+      // "request_more_data", and "escalate_high_value" are three genuinely
+      // different outcomes (see decisionPolicy.js) and collapsing them into
+      // one generic "flagged_for_review" label lost that distinction between
+      // this log and the Exceptions page, which already shows it correctly.
+      // Single source of truth now: whatever matchAll.js decided is exactly
+      // what gets logged and exactly what renders.
+      event: result.recommendedAction,
       confidence: result.confidence,
-      payload: { matchType: result.matchType, recommendedAction: result.recommendedAction },
+      payload: { matchType: result.matchType },
     });
   }
 

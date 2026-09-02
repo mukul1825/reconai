@@ -5,44 +5,59 @@ const { decideAction } = require("../scoring/decisionPolicy");
  * Purpose: narrate a transaction diff into a human-readable explanation.
  *
  * Decision flow: decideAction() (deterministic policy) runs FIRST and its
- * output - action, requiresHumanApproval, missingFields - is treated as fact.
- * The LLM (or its fallback) only writes the "reason" prose; it cannot change
- * the action, and any action field it returns is discarded, never trusted.
- * This preserves the Day 1 rule: confidence and requires_human_approval are
- * never taken from the LLM's output even if it echoes them.
+ * output - action, requiresHumanApproval, missingFields - is treated as
+ * fact. The LLM (or its fallback) only writes the "reason" prose; it
+ * cannot change the action, and nothing it returns is trusted for the
+ * decision fields even if it echoes them back. This preserves the Day 1
+ * rule: confidence and requires_human_approval are never taken from the
+ * LLM's output.
  *
  * Input: { transactions[], nearestCandidateDiff, confidence, amount, availableFields }
  * Output: structured JSON matching the Day 1 AI output schema, plus `action`.
  * Allowed actions: read-only, text generation only. Never queries DB or calls Razorpay.
  *
- * STATUS: Day 2 skeleton - wires the fallback path so the system is demo-safe from
- * day one. Real Groq/OpenRouter call gets filled in on Day 9; when it lands, it
- * still only fills `reason`, per the decision flow above.
+ * STATUS (Day 9): real call to Groq's OpenAI-compatible endpoint, with a
+ * hard timeout and the same template fallback from Day 5/6 on any failure -
+ * the LLM being flaky, rate-limited, or unconfigured should never break a
+ * batch run.
+ *
+ * MODEL NOTE: openai/gpt-oss-20b is a reasoning model - by default it
+ * spends hidden "reasoning" tokens before writing its visible answer, and
+ * those count against max_tokens. Found this the hard way: at max_tokens
+ * 200 with default (medium) reasoning effort, calls were intermittently
+ * returning empty or mid-sentence-truncated answers because reasoning ate
+ * the whole budget. Fixed with reasoning_effort: "low" (this task needs no
+ * real reasoning) plus a larger max_tokens (300) as headroom. If this
+ * still misbehaves under real load, the more robust fix is switching to a
+ * plain non-reasoning instruct model - noted as a candidate follow-up, not
+ * done now given the deadline.
  */
 
+const GROQ_MODEL = "openai/gpt-oss-20b";
+const GROQ_TIMEOUT_MS = 8000;
+
+const SYSTEM_PROMPT = `You explain payment reconciliation discrepancies to a finance operations analyst.
+You are given structured facts about ONE discrepancy: never invent numbers, order IDs, or causes not present in the facts.
+If a fact is null or not provided, simply don't mention it - never comment on data being missing, unknown, or unavailable; explain only what you do know.
+Respond with exactly one or two short plain sentences (under 40 words total). No JSON, no markdown, no preamble like "Here is the explanation:".`;
+
 async function explainException({ transactions, nearestCandidateDiff, confidence, amount, availableFields }) {
-  // Deterministic step - always runs, LLM or not.
   const policyDecision = decideAction({ confidence, amount, availableFields });
 
   let reason;
   try {
-    if (!process.env.LLM_API_KEY) {
-      throw new Error("LLM_API_KEY not set");
+    if (!process.env.GROQ_API_KEY) {
+      throw new Error("GROQ_API_KEY not set");
     }
-
-    // TODO (Day 9): real call to Groq/OpenRouter free-tier model here.
-    // const response = await fetch("https://api.groq.com/openai/v1/chat/completions", { ... });
-    // Parse the response, validate it's a string, assign to `reason`.
-    // Do NOT let the LLM response override policyDecision.action or .requiresHumanApproval.
-
-    throw new Error("LLM call not yet implemented - using fallback");
+    reason = await callGroq({ nearestCandidateDiff, confidence, amount, policyDecision });
   } catch (err) {
-    reason = templateReason({ nearestCandidateDiff, policyDecision });
-  }
+  console.error("[explainException] Falling back to template. Reason:", err.message);
+  reason = templateReason({ nearestCandidateDiff, policyDecision });
+}
 
   return {
     decision: policyDecision.action === "auto_resolve" ? "auto_resolve" : "flag_exception",
-    confidence, // recomputed deterministically upstream, just echoed here
+    confidence,
     reason,
     recommended_action: policyDecision.action,
     requires_human_approval: policyDecision.requiresHumanApproval,
@@ -50,8 +65,60 @@ async function explainException({ transactions, nearestCandidateDiff, confidence
   };
 }
 
-// Deterministic, template-based reason text. Used whenever the LLM call fails,
-// times out, or isn't configured - keeps the demo reliable regardless of API state.
+async function callGroq({ nearestCandidateDiff, confidence, amount, policyDecision }) {
+  const facts = {
+    order_amount: amount,
+    confidence_score: confidence,
+    likely_cause: nearestCandidateDiff?.possibleCause || "unknown",
+    gap_amount: nearestCandidateDiff?.gap ?? null,
+    decision_made: policyDecision.action,
+    missing_fields: policyDecision.missingFields,
+  };
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), GROQ_TIMEOUT_MS);
+
+  try {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        temperature: 0.3,
+        max_tokens: 300, // openai/gpt-oss-20b is a reasoning model - reasoning tokens count against
+                          // this budget BEFORE the visible answer, so this needs real headroom above
+                          // what a plain instruct model would need for the same short answer
+        reasoning_effort: "low", // this task (1-2 sentence explanation from already-computed facts)
+                                  // doesn't need real reasoning - "low" cuts hidden reasoning-token
+                                  // consumption so more of max_tokens goes to the actual answer
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user", content: `Facts:\n${JSON.stringify(facts, null, 2)}\n\nExplain this discrepancy.` },
+        ],
+      }),
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Groq API returned ${response.status}`);
+    }
+
+    const data = await response.json();
+    const text = data?.choices?.[0]?.message?.content?.trim();
+
+    if (!text || text.length === 0 || text.length > 900) {
+  throw new Error("Groq response was empty or unexpectedly long");
+}
+
+    return text;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 function templateReason({ nearestCandidateDiff, policyDecision }) {
   const cause = nearestCandidateDiff?.possibleCause || "unknown_discrepancy";
 
