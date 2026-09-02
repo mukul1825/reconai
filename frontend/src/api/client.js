@@ -4,7 +4,12 @@
  * explain in a hiring interview about "why is this here."
  */
 
-const BASE_URL = "/api/v1";
+// In dev, this stays relative and goes through the Vite proxy (vite.config.js)
+// straight to localhost:5000. In production there's no such proxy - Vercel
+// serves static files with nothing else listening, so this MUST point at
+// the deployed backend's full URL there. Set via VITE_API_BASE_URL in
+// Vercel's project environment variables (e.g. https://reconai-backend.onrender.com/api/v1).
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api/v1";
 
 function getToken() {
   return localStorage.getItem("reconai_token");
