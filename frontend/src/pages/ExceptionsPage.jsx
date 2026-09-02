@@ -5,7 +5,7 @@ import { Check, X, ArrowUpRight } from "lucide-react";
 import { api } from "../api/client";
 import { MatchTypeBadge, ActionBadge } from "../components/Badges";
 import ConfidenceBar from "../components/ConfidenceBar";
-import { SkeletonRows, EmptyState, ErrorBanner } from "../components/States";
+import { SkeletonRows, TableSkeleton, EmptyState, ErrorBanner } from "../components/States";
 
 export default function ExceptionsPage() {
   const batchId = useCurrentBatch();
@@ -74,7 +74,7 @@ export default function ExceptionsPage() {
       )}
 
       {loading ? (
-        <SkeletonRows count={6} />
+        <TableSkeleton rows={6} columnWidths={["w-14", "w-16", "w-28", "flex-1", "w-16"]} />
       ) : exceptions.length === 0 ? (
         <div className="bg-surface border border-line rounded-lg">
           <EmptyState
@@ -84,6 +84,7 @@ export default function ExceptionsPage() {
         </div>
       ) : (
         <div className="bg-surface border border-line rounded-lg overflow-hidden">
+          <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-line text-left">
@@ -136,6 +137,7 @@ export default function ExceptionsPage() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>

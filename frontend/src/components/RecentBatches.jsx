@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../api/client";
 import { setCurrentBatch } from "../api/useCurrentBatch";
 import { BatchStatusBadge } from "./Badges";
-import { SkeletonRows, EmptyState, ErrorBanner } from "./States";
+import { SkeletonRows, TableSkeleton, EmptyState, ErrorBanner } from "./States";
 import { History } from "lucide-react";
 
 function formatDate(iso) {
@@ -74,7 +74,7 @@ export default function RecentBatches({ currentBatchId }) {
       <div className="bg-surface border border-line rounded-lg overflow-hidden">
         {loading ? (
           <div className="p-4">
-            <SkeletonRows count={4} />
+            <TableSkeleton rows={4} columnWidths={["w-24", "w-20", "w-12", "w-10", "w-10", "w-10"]} />
           </div>
         ) : error ? (
           <div className="p-4">
@@ -88,6 +88,7 @@ export default function RecentBatches({ currentBatchId }) {
           />
         ) : (
           <>
+            <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-line text-left">
@@ -136,6 +137,7 @@ export default function RecentBatches({ currentBatchId }) {
                 })}
               </tbody>
             </table>
+            </div>
 
             {nextCursor && (
               <div className="px-4 py-3 border-t border-line">

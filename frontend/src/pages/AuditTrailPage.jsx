@@ -5,7 +5,7 @@ import { ArrowUpRight } from "lucide-react";
 import { api } from "../api/client";
 import ConfidenceBar from "../components/ConfidenceBar";
 import { ActionBadge } from "../components/Badges";
-import { SkeletonRows, EmptyState, ErrorBanner } from "../components/States";
+import { SkeletonRows, TableSkeleton, EmptyState, ErrorBanner } from "../components/States";
 
 // Only for events that AREN'T one of the 4 decision-policy actions
 // (auto_resolve / escalate_high_value / request_more_data / flag_for_review)
@@ -90,13 +90,14 @@ export default function AuditTrailPage() {
       {error && <ErrorBanner message={error} />}
 
       {loading ? (
-        <SkeletonRows count={8} />
+        <TableSkeleton rows={8} columnWidths={["w-24", "w-28", "w-20", "w-16"]} />
       ) : logs.length === 0 ? (
         <div className="bg-surface border border-line rounded-lg">
           <EmptyState title="No audit entries yet" />
         </div>
       ) : (
         <div className="bg-surface border border-line rounded-lg overflow-hidden">
+          <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-line text-left">
@@ -123,6 +124,7 @@ export default function AuditTrailPage() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>

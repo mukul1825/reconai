@@ -15,6 +15,30 @@ export function SkeletonRows({ count = 5 }) {
   );
 }
 
+/**
+ * A row of differently-shaped blocks (badge-width, bar-width, text-width)
+ * rather than one uniform gray bar - so the loading state actually
+ * resembles the table it's about to become, not a generic placeholder
+ * borrowed from a different kind of page.
+ */
+export function TableSkeleton({ rows = 5, columnWidths = ["w-16", "w-20", "w-24", "flex-1"] }) {
+  return (
+    <div className="divide-y divide-line">
+      {Array.from({ length: rows }).map((_, i) => (
+        <div key={i} className="flex items-center gap-4 px-4 py-3">
+          {columnWidths.map((width, j) => (
+            <div
+              key={j}
+              className={`h-4 rounded bg-line/60 animate-pulse ${width}`}
+              style={{ animationDelay: `${i * 40}ms` }}
+            />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function EmptyState({ icon: Icon = Inbox, title, description, action }) {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
