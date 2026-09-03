@@ -1,17 +1,11 @@
 import { NavLink } from "react-router-dom";
-import { Upload, LayoutDashboard, ListChecks, History, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { clearToken } from "../api/client";
-
-const NAV_ITEMS = [
-  { to: "/upload", label: "New batch", icon: Upload },
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/exceptions", label: "Exceptions", icon: ListChecks },
-  { to: "/audit", label: "Audit trail", icon: History },
-];
+import { NAV_ITEMS } from "./navItems";
 
 export default function Sidebar() {
   return (
-    <aside className="w-56 shrink-0 border-r border-line bg-surface flex flex-col h-screen sticky top-0">
+    <aside className="hidden sm:flex w-56 shrink-0 border-r border-line bg-surface flex-col h-screen sticky top-0">
       <div className="px-5 py-5 border-b border-line">
         <div className="flex items-baseline gap-1.5">
           <span className="font-semibold text-[15px] tracking-tight">ReconAI</span>

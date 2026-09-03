@@ -1,5 +1,6 @@
 import { Outlet, Navigate, useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
+import MobileNav from "../components/MobileNav";
 import { isAuthed } from "../api/client";
 
 export default function AppLayout() {
@@ -10,7 +11,8 @@ export default function AppLayout() {
   }
 
   return (
-    <div className="flex min-h-screen bg-paper">
+    <div className="flex flex-col sm:flex-row min-h-screen bg-paper">
+      <MobileNav />
       <Sidebar />
       <main className="flex-1 px-4 sm:px-8 py-6 sm:py-8 max-w-6xl min-w-0">
         <div key={location.pathname} className="page-transition">
