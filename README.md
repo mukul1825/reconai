@@ -2,6 +2,10 @@
 
 **Autonomous reconciliation for merchant finance operations — built for the Razorpay AI Buildathon 2026.**
 
+**🔗 Live demo:** https://frontend-pi-sepia-94.vercel.app · **API:** https://reconai-uodo.onrender.com
+
+*(Backend is on Render's free tier and spins down after 15 minutes idle — the first request after inactivity may take 30-60s to wake up. If the demo looks slow, that's why, not a bug.)*
+
 A finance/ops person at a mid-size merchant spends hours every settlement cycle manually cross-checking three sources — bank credits, the Razorpay settlement report, and internal order records — to find which orders got paid, which were short-settled, and which never landed. ReconAI does that matching automatically: it resolves what it's confident about, explains what it isn't, and never silently drops an order.
 
 ---
@@ -50,22 +54,7 @@ Verified across two independent seeds and sample sizes (n=100, n=250) with ident
 
 ## Architecture
 
-```
-Frontend (React + Vite)
-  │
-  ▼
-Backend (Express) ── Auth (JWT) ── CSV ingest
-  │
-  ▼
-Matching pipeline (pure functions, no DB dependency)
-  exact → fuzzy → split → decision policy
-  │
-  ▼
-Agent layer (Groq LLM, narration only — never decides)
-  │
-  ▼
-MongoDB Atlas (Transactions, Matches, AuditLogs)
-```
+![ReconAI architecture diagram](docs/architecture.svg)
 
 The matching engine (`backend/src/services/matching/`) takes plain arrays in, returns plain objects out — no Mongoose, no HTTP, no I/O. This is why it could be built and exhaustively unit-tested (23 tests across 5 suites) before a single line touched the database, and why a Day 6 settlement-schema rename (see below) required changing exactly one file.
 
@@ -149,6 +138,8 @@ reconai/
 └── docs/
     └── razorpay-schema-notes.md
 ```
+
+**Also in `docs/`:** [`architecture.svg`](docs/architecture.svg) (the diagram above, as source) and [`judge-qa.md`](docs/judge-qa.md) — 25 anticipated questions answered against what was actually built, including real bugs found and fixed during the build rather than a cleaned-up narrative.
 
 ---
 
