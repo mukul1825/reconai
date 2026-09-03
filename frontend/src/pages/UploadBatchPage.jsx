@@ -4,6 +4,7 @@ import { FileText, Landmark, Receipt, Check, Loader2 } from "lucide-react";
 import { api } from "../api/client";
 import { setCurrentBatch } from "../api/useCurrentBatch";
 import { ErrorBanner } from "../components/States";
+import RecentBatches from "../components/RecentBatches";
 
 const SOURCES = [
   {
@@ -94,7 +95,8 @@ export default function UploadBatchPage() {
   }
 
   return (
-    <div className="max-w-2xl">
+    <div>
+      <div className="max-w-2xl">
       <div className="mb-6">
         <h1 className="text-lg font-semibold tracking-tight">New reconciliation batch</h1>
         <p className="text-sm text-subtle mt-1">
@@ -128,6 +130,15 @@ export default function UploadBatchPage() {
           Matching against your bank statement and settlement report — this takes a few seconds.
         </p>
       )}
+      </div>
+
+      {/* Real content, not decoration: this is the first screen after every
+          login, and showing batch history here (same component as the
+          Dashboard) makes it immediately clear this is an ongoing tool,
+          not a one-shot script - the same reasoning that fixed the
+          Dashboard's empty-space gap earlier applies here, on a page with
+          even less inherent content. */}
+      <RecentBatches currentBatchId={null} />
     </div>
   );
 }
